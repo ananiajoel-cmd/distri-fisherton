@@ -488,4 +488,4 @@ export default function App() {
               {cart.length > 0 && (
                 <div className="border-t p-4">
                   <div className="flex justify-between items-center mb-4">
-   
+    
