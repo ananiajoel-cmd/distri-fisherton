@@ -1,0 +1,879 @@
+import React, { useState, useRef, useMemo } from 'react';
+import { ShoppingCart, Facebook, Instagram, Package, Tag, Truck, Check, Plus, Minus } from 'lucide-react';
+
+const CONFIG = {
+  whatsappNumber: '+5493412131449',
+  socialLinks: {
+    facebook: 'https://facebook.com/tusupermayorista',
+    instagram: 'https://www.instagram.com/distri.fisherton?igsh=MXUyanluMjV6ZXVrYg=='
+  },
+  banner: {
+    title: '¡Bienvenido a DistriFisherton!',
+    subtitle: 'Los mejores precios al por mayor para tu negocio',
+    cta: 'Explorar Productos'
+  },
+  products: [
+    {
+      id: 20,
+      name: 'Cerveza Isenbeck 473ml',
+      description: 'Cerveza premium en botella de 473ml',
+      image: 'https://ardiaprod.vtexassets.com/arquivos/ids/334655-500-auto?v=638635545458400000&width=500&height=auto&aspect=true',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 7000 },
+        { id: 'caja24', name: 'Caja x24', quantity: 24, price: 24500 }
+      ]
+    },
+    {
+      id: 21,
+      name: 'Cerveza Brahma 473ml',
+      description: 'Cerveza premium en botella de 473ml',
+      image: 'https://www.ciprianomayorista.com.ar/wp-content/uploads/2021/01/3756.jpg',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 9000 },
+        { id: 'caja24', name: 'Caja x24', quantity: 24, price: 32000 }
+      ]
+    },
+    {
+      id: 25,
+      name: 'Cerveza Corona 473ml',
+      description: 'Cerveza premium en lata de 473ml',
+      image: 'https://jumboargentina.vtexassets.com/arquivos/ids/890567/Cerveza-473-Cc-Corona-1-1018884.jpg?v=638987206333400000',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 10000 },
+        { id: 'caja24', name: 'Caja x24', quantity: 24, price: 37000 }
+      ]
+    },
+    {
+      id: 26,
+      name: 'Agua Saborizada Rumipal 1.5L',
+      description: 'Agua saborizada en botella de 1.5 litros',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiTYjE3zEBKkbBkvexG76q0yGimJtEk99QzWMOymUjJHqLSVMrj7XiYnA&s=10',
+      options: [
+        { id: 'naranja', name: 'Naranja', quantity: 6, price: 4800 },
+        { id: 'manzana', name: 'Manzana', quantity: 6, price: 4800 },
+        { id: 'pomelo', name: 'Pomelo', quantity: 6, price: 4800 }
+      ]
+    },
+    {
+      id: 22,
+      name: 'Vino Toro Tinto 1L',
+      description: 'Vino tinto en tetrabrick de 1 litro',
+      image: 'https://jumboargentina.vtexassets.com/arquivos/ids/652992/Vino-Toro-Tinro-Brk-1000cc-1-853904.jpg?v=637603170416900000',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 10000 },
+        { id: 'caja12', name: 'Caja x12', quantity: 12, price: 19000 }
+      ]
+    },
+    {
+      id: 23,
+      name: 'Vino Toro Blanco 1L',
+      description: 'Vino blanco en tetrabrick de 1 litro',
+      image: 'https://arcordiezb2c.vteximg.com.br/arquivos/ids/167425/Vino-Blanco-Tetra-Brik-Toro-1-Lt-1-9479.jpg?v=637733002239570000',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 9000 },
+        { id: 'caja12', name: 'Caja x12', quantity: 12, price: 16500 }
+      ]
+    },
+    {
+      id: 24,
+      name: 'Vino Canciller Blend 1.125L',
+      description: 'Vino en botella de 1.125 litros - Pack de 6 unidades',
+      image: 'https://www.lacoopeencasa.coop/media/lcec/publico/articulos/1/f/d/1fda56235f97ed43a2e7e9b4fc0a8560',
+      options: [
+        { id: 'tinto', name: 'Tinto', quantity: 6, price: 13800 },
+        { id: 'blanco-dulce', name: 'Blanco Dulce', quantity: 6, price: 13800 }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Cerveza Budweiser 355ml',
+      description: 'Pack ideal para comercios y eventos',
+      image: 'https://acdn-us.mitiendanube.com/stores/005/110/462/products/1080-x-1080-2025-04-25t141134-656-75168c95831c26bd0d17456013386220-1024-1024.webp',
+      options: [
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 7800 },
+        { id: 'box24', name: 'Caja x24', quantity: 24, price: 26500 }
+      ]
+    },
+    {
+      id: 10,
+      name: 'Jugos BIG C 200ml',
+      description: 'Pack de 18 unidades con 4 sabores disponibles',
+      image: 'https://static.wixstatic.com/media/2d0188_10727abf8dde4a65bb814cbe1d80220e~mv2.jpg/v1/fill/w_480,h_480,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/2d0188_10727abf8dde4a65bb814cbe1d80220e~mv2.jpg',
+      flavors: ['Pera', 'Multifrutal', 'Manzana', 'Durazno'],
+      pricePerPack: 5500
+    },
+    {
+      id: 11,
+      name: 'Jugos BIG C 1L',
+      description: 'Pack de 12 unidades con 4 sabores disponibles',
+      image: 'https://bigarsa.com.ar/wp-content/uploads/2019/01/big-choice-todos-los-jugos-1024x535.jpg',
+      flavors: ['Pera', 'Multifrutal', 'Manzana', 'Durazno'],
+      pricePerPack: 11000
+    },
+    {
+      id: 5,
+      name: 'Gaseosa Rumipal 2.25L',
+      description: 'Bebida refrescante en presentación familiar con 4 sabores disponibles',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2GBLskx-gO8L6fw2HJ9xarcShUhH2wkJ-AJjV2lazZM6Zv4bYDUPrbtc&s=10',
+      flavors: ['Cola', 'Limón', 'Lima Limón', 'Naranja'],
+      pricePerPack: 5600
+    },
+    {
+      id: 6,
+      name: 'Yerba Mañanita 500g',
+      description: 'Yerba tradicional de alta calidad',
+      image: 'https://farmacityar.vtexassets.com/arquivos/ids/244751/234163_yerba-mate-mananita-x-500-g_imagen-1.jpg?v=638247631354100000',
+      options: [
+        { id: 'pack3', name: 'Pack x3', quantity: 3, price: 5500 },
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 10800 }
+      ]
+    },
+    {
+      id: 8,
+      name: 'Yerba Taragüí 500g',
+      description: 'Yerba clásica con sabor intenso y tradicional',
+      image: 'https://acdn-us.mitiendanube.com/stores/002/098/144/products/tienda-nube-041-c96cae8ba5296ecf2516641501828668-1024-1024.webp',
+      options: [
+        { id: 'pack3', name: 'Pack x3', quantity: 3, price: 5500 },
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 10800 }
+      ]
+    },
+    {
+      id: 9,
+      name: 'Yerba Unión 500g',
+      description: 'Yerba premium con sabor suave y equilibrado',
+      image: 'https://acdn-us.mitiendanube.com/stores/001/458/724/products/plantilla_fotos_productos_fika-1162b5ee26939897b517298808725794-1024-1024.webp',
+      options: [
+        { id: 'pack3', name: 'Pack x3', quantity: 3, price: 5500 },
+        { id: 'pack6', name: 'Pack x6', quantity: 6, price: 10800 }
+      ]
+    }
+  ],
+  weeklyOffers: [
+    {
+      id: 102,
+      name: 'Promo',
+      description: '2 cajas de Vino Toro tinto 1 litro\nmás gaseosa Rumipal 2,25 ML',
+      image: 'https://placehold.co/300x300/4CAF50/white?text=Promo',
+      price: 5000
+    }
+  ]
+};
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0
+  }).format(price);
+};
+
+export default function App() {
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const [rumipalConfigs, setRumipalConfigs] = useState([]);
+  const [bigCConfigs, setBigCConfigs] = useState([]);
+  const productsRef = useRef(null);
+
+  const sortedProducts = useMemo(() => {
+    return [...CONFIG.products].sort((a, b) => 
+      a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
+    );
+  }, []);
+
+  const scrollToProducts = () => {
+    if (productsRef.current) {
+      productsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const addRumipalConfig = () => {
+    setRumipalConfigs([...rumipalConfigs, { id: Date.now(), packs: 1, flavors: [] }]);
+  };
+
+  const updateRumipalPacks = (configId, newPacks) => {
+    if (newPacks < 1) return;
+    setRumipalConfigs(rumipalConfigs.map(config => 
+      config.id === configId ? { ...config, packs: newPacks } : config
+    ));
+  };
+
+  const toggleRumipalFlavor = (configId, flavor) => {
+    setRumipalConfigs(rumipalConfigs.map(config => {
+      if (config.id === configId) {
+        const currentFlavors = config.flavors || [];
+        if (currentFlavors.includes(flavor)) {
+          return { ...config, flavors: currentFlavors.filter(f => f !== flavor) };
+        } else {
+          return { ...config, flavors: [...currentFlavors, flavor] };
+        }
+      }
+      return config;
+    }));
+  };
+
+  const removeRumipalConfig = (configId) => {
+    setRumipalConfigs(rumipalConfigs.filter(config => config.id !== configId));
+  };
+
+  const addBigCConfig = (productId) => {
+    setBigCConfigs([...bigCConfigs, { id: Date.now(), productId, packs: 1, flavors: [] }]);
+  };
+
+  const updateBigCPacks = (configId, newPacks) => {
+    if (newPacks < 1) return;
+    setBigCConfigs(bigCConfigs.map(config => 
+      config.id === configId ? { ...config, packs: newPacks } : config
+    ));
+  };
+
+  const toggleBigCFlavor = (configId, flavor) => {
+    setBigCConfigs(bigCConfigs.map(config => {
+      if (config.id === configId) {
+        const currentFlavors = config.flavors || [];
+        if (currentFlavors.includes(flavor)) {
+          return { ...config, flavors: currentFlavors.filter(f => f !== flavor) };
+        } else {
+          return { ...config, flavors: [...currentFlavors, flavor] };
+        }
+      }
+      return config;
+    }));
+  };
+
+  const removeBigCConfig = (configId) => {
+    setBigCConfigs(bigCConfigs.filter(config => config.id !== configId));
+  };
+
+  const addToCart = (item, type = 'product') => {
+    if (type === 'offer') {
+      const cartItem = {
+        id: `offer-${item.id}`,
+        name: item.name,
+        description: item.description,
+        quantity: 1,
+        price: item.price,
+        totalPrice: item.price,
+        isOffer: true
+      };
+      
+      const existingItem = cart.find(existing => existing.id === cartItem.id);
+      if (existingItem) {
+        setCart(cart.map(existing => 
+          existing.id === cartItem.id 
+            ? { ...existing, quantity: existing.quantity + 1, totalPrice: existing.totalPrice + cartItem.price }
+            : existing
+        ));
+      } else {
+        setCart([...cart, cartItem]);
+      }
+    } else if (item.product.id === 5) {
+      rumipalConfigs.forEach(config => {
+        if (config.flavors.length > 0) {
+          const rumipalItem = {
+            id: `rumipal-${config.id}`,
+            name: `Gaseosa Rumipal 2.25L`,
+            optionName: `Pack x6 (${config.flavors.join(', ')})`,
+            packs: config.packs,
+            quantity: config.packs * 6,
+            price: CONFIG.products.find(p => p.id === 5).pricePerPack,
+            totalPrice: config.packs * CONFIG.products.find(p => p.id === 5).pricePerPack,
+            flavors: config.flavors
+          };
+          setCart(prevCart => {
+            const existing = prevCart.find(existingItem => existingItem.id === rumipalItem.id);
+            if (existing) {
+              return prevCart.map(existingItem => 
+                existingItem.id === rumipalItem.id
+                  ? { ...existingItem, quantity: existingItem.quantity + rumipalItem.quantity, totalPrice: existingItem.totalPrice + rumipalItem.totalPrice, packs: existingItem.packs + rumipalItem.packs }
+                  : existingItem
+              );
+            } else {
+              return [...prevCart, rumipalItem];
+            }
+          });
+        }
+      });
+      setRumipalConfigs([]);
+    } else if (item.product.id === 10 || item.product.id === 11) {
+      bigCConfigs
+        .filter(config => config.productId === item.product.id)
+        .forEach(config => {
+          if (config.flavors.length > 0) {
+            const bigCItem = {
+              id: `bigc-${config.id}`,
+              name: item.product.name,
+              optionName: `Pack x1 (${config.flavors.join(', ')})`,
+              packs: config.packs,
+              quantity: config.productId === 10 ? config.packs * 18 : config.packs * 12,
+              price: item.product.pricePerPack,
+              totalPrice: config.packs * item.product.pricePerPack,
+              flavors: config.flavors,
+              productId: item.product.id
+            };
+            setCart(prevCart => {
+              const existing = prevCart.find(existingItem => 
+                existingItem.name === bigCItem.name && 
+                JSON.stringify(existingItem.flavors) === JSON.stringify(bigCItem.flavors)
+              );
+              if (existing) {
+                return prevCart.map(existingItem => 
+                  existingItem.name === bigCItem.name && 
+                  JSON.stringify(existingItem.flavors) === JSON.stringify(bigCItem.flavors)
+                    ? { ...existingItem, quantity: existingItem.quantity + bigCItem.quantity, totalPrice: existingItem.totalPrice + bigCItem.totalPrice, packs: existingItem.packs + bigCItem.packs }
+                    : existingItem
+                );
+              } else {
+                return [...prevCart, bigCItem];
+              }
+            });
+          }
+        });
+      setBigCConfigs(bigCConfigs.filter(config => config.productId !== item.product.id));
+    } else {
+      const cartItem = {
+        id: `${item.product.id}-${item.option.id}`,
+        productId: item.product.id,
+        name: item.product.name,
+        optionName: item.option.name,
+        quantity: item.option.quantity,
+        price: item.option.price,
+        totalPrice: item.option.price
+      };
+      
+      const existingItem = cart.find(existing => existing.id === cartItem.id);
+      if (existingItem) {
+        setCart(cart.map(existing => 
+          existing.id === cartItem.id 
+            ? { ...existing, quantity: existing.quantity + cartItem.quantity, totalPrice: existing.totalPrice + cartItem.totalPrice }
+            : existing
+        ));
+      } else {
+        setCart([...cart, cartItem]);
+      }
+    }
+  };
+
+  const removeFromCart = (cartItemId) => {
+    setCart(cart.filter(item => item.id !== cartItemId));
+  };
+
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + item.totalPrice, 0);
+  };
+
+  const generateWhatsAppMessage = () => {
+    const message = `¡Hola! Quisiera hacer un pedido desde DistriFisherton:\n\n` +
+      cart.map(item => {
+        if (item.isOffer) {
+          return `• ${item.name}: ${item.quantity} unidad(es) - ${formatPrice(item.totalPrice)}`;
+        } else if (item.flavors) {
+          if (item.productId === 10) {
+            const packDisplay = item.packs > 1 ? `Pack x18 x${item.packs}` : `Pack x18`;
+            return `• ${item.name} (${packDisplay} - ${item.flavors.join(', ')}): ${item.quantity} unidades - ${formatPrice(item.totalPrice)}`;
+          } else if (item.productId === 11) {
+            const packDisplay = item.packs > 1 ? `Pack x12 x${item.packs}` : `Pack x12`;
+            return `• ${item.name} (${packDisplay} - ${item.flavors.join(', ')}): ${item.quantity} unidades - ${formatPrice(item.totalPrice)}`;
+          } else {
+            const packDisplay = item.packs > 1 ? `Pack x6 x${item.packs}` : `Pack x6`;
+            return `• ${item.name} (${packDisplay} - ${item.flavors.join(', ')}): ${item.quantity} unidades - ${formatPrice(item.totalPrice)}`;
+          }
+        } else {
+          return `• ${item.name} (${item.optionName}): ${item.quantity} unidades - ${formatPrice(item.totalPrice)}`;
+        }
+      }).join('\n') +
+      `\n\nTotal: ${formatPrice(calculateTotal())}\n\nGracias!`;
+    
+    return encodeURIComponent(message);
+  };
+
+  const sendOrder = () => {
+    const whatsappUrl = `https://wa.me/${CONFIG.whatsappNumber}?text=${generateWhatsAppMessage()}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const getBigCConfigsByProduct = (productId) => {
+    return bigCConfigs.filter(config => config.productId === productId);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F9F9F9]">
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <Package className="h-8 w-8 text-[#4CAF50]" />
+              <h1 className="text-xl font-bold text-[#333333]">DistriFisherton</h1>
+            </div>
+            
+            <nav className="hidden md:flex space-x-8">
+              <button 
+                onClick={scrollToProducts}
+                className="text-[#333333] hover:text-[#4CAF50] transition-colors"
+              >
+                Productos
+              </button>
+              <a href="#offers" className="text-[#333333] hover:text-[#FF9800] transition-colors">Ofertas</a>
+            </nav>
+            
+            <div className="flex items-center space-x-4">
+              <a href={CONFIG.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-[#333333] hover:text-[#4CAF50] transition-colors">
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a href={CONFIG.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-[#333333] hover:text-[#4CAF50] transition-colors">
+                <Instagram className="h-5 w-5" />
+              </a>
+              
+              <button 
+                onClick={() => setShowCart(!showCart)}
+                className="relative p-2 text-[#333333] hover:text-[#2196F3] transition-colors"
+              >
+                <ShoppingCart className="h-6 w-6" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#FF9800] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {showCart && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowCart(false)} />
+          <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold text-[#333333]">Carrito de Compras</h2>
+                <button 
+                  onClick={() => setShowCart(false)}
+                  className="text-[#333333] hover:text-[#FF9800]"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4">
+                {cart.length === 0 ? (
+                  <p className="text-[#333333] text-center py-8">Tu carrito está vacío</p>
+                ) : (
+                  <div className="space-y-4">
+                    {cart.map(item => (
+                      <div key={item.id} className="flex items-center justify-between p-3 bg-[#F9F9F9] rounded-lg">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-[#333333]">{item.name}</h3>
+                          <p className="text-sm text-[#666666] mt-1 whitespace-pre-line">
+                            {item.isOffer 
+                              ? item.description
+                              : item.optionName}
+                          </p>
+                          <p className="font-semibold text-[#4CAF50] mt-2">
+                            {formatPrice(item.totalPrice)}
+                          </p>
+                        </div>
+                        <button 
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-red-500 hover:text-red-700 ml-2"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {cart.length > 0 && (
+                <div className="border-t p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="font-semibold text-[#333333]">Total:</span>
+                    <span className="text-xl font-bold text-[#4CAF50]">
+                      {formatPrice(calculateTotal())}
+                    </span>
+                  </div>
+                  <button
+                    onClick={sendOrder}
+                    className="w-full bg-[#2196F3] text-white py-3 rounded-lg font-semibold hover:bg-[#1976D2] transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <Truck className="h-5 w-5" />
+                    <span>Enviar Pedido por WhatsApp</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <section className="bg-gradient-to-r from-[#4CAF50] to-[#2196F3] text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{CONFIG.banner.title}</h1>
+          <p className="text-xl mb-8">{CONFIG.banner.subtitle}</p>
+          <button 
+            onClick={scrollToProducts}
+            className="bg-[#FF9800] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#F57C00] transition-colors inline-block"
+          >
+            {CONFIG.banner.cta}
+          </button>
+        </div>
+      </section>
+
+      <section id="offers" className="py-16 bg-[#FFF176]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <Tag className="h-12 w-12 text-[#333333] mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-[#333333] mb-4">Ofertas de la Semana</h2>
+            <p className="text-lg text-[#666666]">Aprovecha nuestras promociones especiales</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {CONFIG.weeklyOffers.map(offer => (
+              <div key={offer.id} className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform">
+                <div className="relative">
+                  <img 
+                    src={offer.image} 
+                    alt={offer.name}
+                    className="w-full h-48 object-cover object-center"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-[#333333] mb-2">{offer.name}</h3>
+                  <p className="text-[#666666] mb-4 whitespace-pre-line">{offer.description}</p>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-[#4CAF50]">
+                      {formatPrice(offer.price)}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => addToCart(offer, 'offer')}
+                    className="w-full bg-[#2196F3] text-white py-2 rounded-lg font-semibold hover:bg-[#1976D2] transition-colors"
+                  >
+                    Agregar al Carrito
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section ref={productsRef} id="products" className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-[#333333] mb-4">Catálogo de Productos</h2>
+            <p className="text-lg text-[#666666]">Precios al por mayor para tu negocio</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {sortedProducts.map(product => (
+              <div key={product.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-full h-48 object-cover object-center"
+                />
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-[#333333] mb-2">{product.name}</h3>
+                  <p className="text-[#666666] mb-4">{product.description}</p>
+                  
+                  {/* Sistema avanzado para Gaseosa Rumipal */}
+                  {product.id === 5 && (
+                    <div className="mb-4">
+                      <div className="text-center py-2 bg-[#F5F5F5] rounded mb-3">
+                        <span className="text-sm font-medium text-[#333333]">Precio por pack:</span>
+                        <span className="text-lg font-bold text-[#4CAF50] block mt-1">
+                          {formatPrice(product.pricePerPack)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mb-3">
+                        <p className="text-sm font-medium text-[#333333]">Configura tus packs:</p>
+                        <button
+                          onClick={addRumipalConfig}
+                          className="text-xs bg-[#2196F3] text-white px-2 py-1 rounded flex items-center space-x-1"
+                        >
+                          <Plus className="h-3 w-3" />
+                          <span>Agregar Pack</span>
+                        </button>
+                      </div>
+                      
+                      {rumipalConfigs.length === 0 && (
+                        <div className="text-center py-4 bg-[#F9F9F9] rounded-lg mb-3">
+                          <p className="text-sm text-[#666666]">Haz clic en "Agregar Pack" para comenzar</p>
+                        </div>
+                      )}
+                      
+                      {rumipalConfigs.map((config, index) => (
+                        <div key={config.id} className="border border-[#E0E0E0] rounded-lg p-3 mb-3 bg-[#F9F9F9]">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium">Pack #{index + 1}</span>
+                            <button
+                              onClick={() => removeRumipalConfig(config.id)}
+                              className="text-red-500 hover:text-red-700 text-xs"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-xs">Cantidad:</span>
+                            <button
+                              onClick={() => updateRumipalPacks(config.id, config.packs - 1)}
+                              className="p-1 border rounded"
+                              disabled={config.packs <= 1}
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="text-sm font-medium w-8 text-center">{config.packs}</span>
+                            <button
+                              onClick={() => updateRumipalPacks(config.id, config.packs + 1)}
+                              className="p-1 border rounded"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                            <span className="text-xs ml-2">({config.packs * 6} unidades)</span>
+                          </div>
+                          
+                          <p className="text-xs font-medium mb-2">Sabor(es):</p>
+                          <div className="grid grid-cols-2 gap-1">
+                            {product.flavors.map(flavor => (
+                              <button
+                                key={flavor}
+                                onClick={() => toggleRumipalFlavor(config.id, flavor)}
+                                className={`flex items-center justify-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                                  config.flavors.includes(flavor)
+                                    ? 'bg-[#2196F3] text-white'
+                                    : 'bg-white text-[#333333] border border-[#E0E0E0]'
+                                }`}
+                              >
+                                {config.flavors.includes(flavor) && (
+                                  <Check className="h-3 w-3" />
+                                )}
+                                <span>{flavor}</span>
+                              </button>
+                            ))}
+                          </div>
+                          {config.flavors.length === 0 && (
+                            <p className="text-xs text-red-500 mt-1">Selecciona al menos un sabor</p>
+                          )}
+                        </div>
+                      ))}
+                      
+                      <div className="text-xs text-[#333333] bg-blue-50 p-3 rounded mb-3 border-l-4 border-blue-500">
+                        <strong>💡 Importante:</strong> Cada vez que quieras agregar otro sabor diferente, 
+                        debes hacer clic en <strong>"Agregar Pack"</strong> para crear una nueva configuración. 
+                        Cada pack puede tener su propia combinación de sabores.
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Sistema avanzado para Jugos BIG C */}
+                  {(product.id === 10 || product.id === 11) && (
+                    <div className="mb-4">
+                      <div className="text-center py-2 bg-[#F5F5F5] rounded mb-3">
+                        <span className="text-sm font-medium text-[#333333]">Precio por pack:</span>
+                        <span className="text-lg font-bold text-[#4CAF50] block mt-1">
+                          {formatPrice(product.pricePerPack)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mb-3">
+                        <p className="text-sm font-medium text-[#333333]">Configura tus packs:</p>
+                        <button
+                          onClick={() => addBigCConfig(product.id)}
+                          className="text-xs bg-[#2196F3] text-white px-2 py-1 rounded flex items-center space-x-1"
+                        >
+                          <Plus className="h-3 w-3" />
+                          <span>Agregar Pack</span>
+                        </button>
+                      </div>
+                      
+                      {getBigCConfigsByProduct(product.id).length === 0 && (
+                        <div className="text-center py-4 bg-[#F9F9F9] rounded-lg mb-3">
+                          <p className="text-sm text-[#666666]">Haz clic en "Agregar Pack" para comenzar</p>
+                        </div>
+                      )}
+                      
+                      {getBigCConfigsByProduct(product.id).map((config, index) => (
+                        <div key={config.id} className="border border-[#E0E0E0] rounded-lg p-3 mb-3 bg-[#F9F9F9]">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium">Pack #{index + 1}</span>
+                            <button
+                              onClick={() => removeBigCConfig(config.id)}
+                              className="text-red-500 hover:text-red-700 text-xs"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="text-xs">Cantidad:</span>
+                            <button
+                              onClick={() => updateBigCPacks(config.id, config.packs - 1)}
+                              className="p-1 border rounded"
+                              disabled={config.packs <= 1}
+                            >
+                              <Minus className="h-3 w-3" />
+                            </button>
+                            <span className="text-sm font-medium w-8 text-center">{config.packs}</span>
+                            <button
+                              onClick={() => updateBigCPacks(config.id, config.packs + 1)}
+                              className="p-1 border rounded"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </button>
+                            <span className="text-xs ml-2">
+                              ({config.packs * (product.id === 10 ? 18 : 12)} unidades)
+                            </span>
+                          </div>
+                          
+                          <p className="text-xs font-medium mb-2">Sabor(es):</p>
+                          <div className="grid grid-cols-2 gap-1">
+                            {product.flavors.map(flavor => (
+                              <button
+                                key={flavor}
+                                onClick={() => toggleBigCFlavor(config.id, flavor)}
+                                className={`flex items-center justify-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                                  config.flavors.includes(flavor)
+                                    ? 'bg-[#2196F3] text-white'
+                                    : 'bg-white text-[#333333] border border-[#E0E0E0]'
+                                }`}
+                              >
+                                {config.flavors.includes(flavor) && (
+                                  <Check className="h-3 w-3" />
+                                )}
+                                <span>{flavor}</span>
+                              </button>
+                            ))}
+                          </div>
+                          {config.flavors.length === 0 && (
+                            <p className="text-xs text-red-500 mt-1">Selecciona al menos un sabor</p>
+                          )}
+                        </div>
+                      ))}
+                      
+                      <div className="text-xs text-[#333333] bg-blue-50 p-3 rounded mb-3 border-l-4 border-blue-500">
+                        <strong>💡 Importante:</strong> Cada vez que quieras agregar otro sabor diferente, 
+                        debes hacer clic en <strong>"Agregar Pack"</strong> para crear una nueva configuración. 
+                        Cada pack puede tener su propia combinación de sabores.
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Precios y botones */}
+                  {product.id !== 5 && product.id !== 10 && product.id !== 11 && (
+                    <>
+                      <div className="space-y-2 mb-4">
+                        {product.options.map(option => (
+                          <div key={option.id} className="flex justify-between items-center py-1">
+                            <span className="font-medium text-[#333333]">{option.name}:</span>
+                            <span className="text-[#4CAF50] font-semibold">{formatPrice(option.price)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="space-y-2">
+                        {product.options.map(option => (
+                          <button
+                            key={option.id}
+                            onClick={() => addToCart({ product, option })}
+                            className="w-full bg-[#2196F3] text-white py-2 rounded-lg font-semibold hover:bg-[#1976D2] transition-colors text-sm"
+                          >
+                            Agregar {option.name}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Botones para Gaseosa Rumipal y Jugos BIG C */}
+                  {(product.id === 5 || product.id === 10 || product.id === 11) && (
+                    <button
+                      onClick={() => addToCart({ product })}
+                      disabled={
+                        (product.id === 5 && (rumipalConfigs.length === 0 || rumipalConfigs.some(config => config.flavors.length === 0))) ||
+                        ((product.id === 10 || product.id === 11) && (getBigCConfigsByProduct(product.id).length === 0 || getBigCConfigsByProduct(product.id).some(config => config.flavors.length === 0)))
+                      }
+                      className={`w-full py-2 rounded-lg font-semibold text-sm transition-colors ${
+                        (product.id === 5 && (rumipalConfigs.length === 0 || rumipalConfigs.some(config => config.flavors.length === 0))) ||
+                        ((product.id === 10 || product.id === 11) && (getBigCConfigsByProduct(product.id).length === 0 || getBigCConfigsByProduct(product.id).some(config => config.flavors.length === 0)))
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-[#2196F3] text-white hover:bg-[#1976D2]'
+                      }`}
+                    >
+                      {product.id === 5 
+                        ? (rumipalConfigs.length === 0 
+                            ? 'Configura tus packs primero' 
+                            : rumipalConfigs.some(config => config.flavors.length === 0)
+                              ? 'Completa todos los sabores'
+                              : `Agregar ${rumipalConfigs.reduce((sum, config) => sum + config.packs, 0)} pack(s) al carrito`)
+                        : getBigCConfigsByProduct(product.id).length === 0 
+                          ? 'Configura tus packs primero' 
+                          : getBigCConfigsByProduct(product.id).some(config => config.flavors.length === 0)
+                            ? 'Completa todos los sabores'
+                            : `Agregar ${getBigCConfigsByProduct(product.id).reduce((sum, config) => sum + config.packs, 0)} pack(s) al carrito`
+                      }
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-[#333333] text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <Package className="h-6 w-6 text-[#4CAF50]" />
+                <h3 className="text-xl font-bold">DistriFisherton</h3>
+              </div>
+              <p className="text-[#CCCCCC]">
+                Los mejores precios al por mayor para tu negocio. 
+                Calidad garantizada y entrega rápida.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Contacto</h4>
+              <p className="text-[#CCCCCC] mb-2">WhatsApp: {CONFIG.whatsappNumber}</p>
+              <p className="text-[#CCCCCC]">
+                Horario: Lunes a Viernes de 9 a 19 hs<br />
+                Sábados de 9:30 a 13 hs
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Síguenos</h4>
+              <div className="flex space-x-4">
+                <a 
+                  href={CONFIG.socialLinks.facebook} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-[#4CAF50] p-2 rounded-full hover:bg-[#45a049] transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+                <a 
+                  href={CONFIG.socialLinks.instagram} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-[#4CAF50] p-2 rounded-full hover:bg-[#45a049] transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-[#444444] mt-8 pt-8 text-center text-[#CCCCCC]">
+            <p>&copy; 2025 DistriFisherton. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
